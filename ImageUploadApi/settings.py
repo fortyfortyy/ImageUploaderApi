@@ -147,6 +147,9 @@ DEFAULT_FILE_STORAGE = "ImageUploadApi.storage.CustomImageStorage"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10 MB in bytes
+MIN_EXPIRY_LINK_TIME = 300
+MAX_EXPIRY_LINK_TIME = 30000
+DEFALT_EXPIRY_LINK_TIME = 3600
 
 AUTH_USER_MODEL = "accounts.UserAccount"
 SITE_ID = 1
@@ -159,6 +162,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    'EXCEPTION_HANDLER': 'ImageUploadApi.utils.custom_exception_handler',
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
