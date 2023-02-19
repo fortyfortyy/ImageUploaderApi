@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     "allauth",
     "allauth.account",
+    'django_cleanup.apps.CleanupConfig',
 
     # local
     "accounts.apps.AccountsConfig",
@@ -144,6 +145,8 @@ DEFAULT_FILE_STORAGE = "ImageUploadApi.storage.CustomImageStorage"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10 MB in bytes
 
 AUTH_USER_MODEL = "accounts.UserAccount"
 SITE_ID = 1
