@@ -2,7 +2,7 @@ import uuid
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models.signals import post_migrate
+from django.db.models.signals import post_migrate, post_save
 from django.dispatch import receiver
 
 from images.models import ThumbnailSize
@@ -56,10 +56,8 @@ def create_default_account_tiers(sender, **kwargs):
         enterprise_account.get_original_file = True
 
 
+@receiver(post_save, sender=UserAccount)
 def create_user_account(sender, instance, created, **kwargs):
     if created and not instance.account_tier:
         instance.account_tier = AccountTier.objects.get(name="Basic")
         instance.save()
-
-
-models.signals.post_save.connect(create_user_account, sender=UserAccount)
