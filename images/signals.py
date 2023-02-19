@@ -4,6 +4,7 @@ from io import BytesIO
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django_cleanup.signals import cleanup_pre_delete
 from PIL import Image as PIL_Image
 
 from images.models import Image
@@ -40,3 +41,23 @@ def create_thumbnails(sender, instance, **kwargs):
         # thumbnail_storage = instance.image.storage
         # thumbnail_path = thumbnail_storage.save(thumb_file.name, thumb_file)
         # thumbnail_storage.save(thumb_file.name, thumb_file)
+
+
+@receiver(cleanup_pre_delete, sender=Image)
+def custom_cleanup_pre_delete(sender, instance, **kwargs):
+    thumbnails_folder = os.path.dirname(instance.image.path)
+    if not os.path.isdir(thumbnails_folder):
+        print(f"Folder {thumbnails_folder} does not exist")
+        return
+
+    for filename in os.listdir(thumbnails_folder):
+        file_path = os.path.join(thumbnails_folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                os.rmdir(file_path)
+        except Exception as e:
+            print(f"Failed to delete {file_path}. Reason: {e}")
+
+    os.rmdir(thumbnails_folder)
