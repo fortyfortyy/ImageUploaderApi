@@ -13,3 +13,14 @@ class ImageListView(generics.ListAPIView):
             user = self.request.user
 
         return Image.objects.filter(user=user)
+
+
+# TODO zaimplementować image upload, oraz jego walidacje
+# TODO zaimplementować wygasające linki
+# TODO przy inicjacji apki od nowa zaimplemenotwać testowego usera
+# TODO zrobić config.py z domyślnymi globalnymi wartościami
+# TODO testy
+# TODO google storage, redis, celery
+# TODO docker compose, zmienne środowiskowe
+# TODO caching
+# TODO hosting na cloud providerze
