@@ -1,0 +1,15 @@
+[tool.black]
+line-length = 127
+target-version = ['py310']
+exclude = ['settings.py', '*/migrations/*']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+py_version = 310
+skip = "settings.py"
+skip_glob= ["*/migrations/*"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^4.1.7"
