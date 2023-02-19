@@ -1,0 +1,63 @@
+import os
+from io import BytesIO
+
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django_cleanup.signals import cleanup_pre_delete
+from PIL import Image as PIL_Image
+
+from images.models import Image
+
+
+@receiver(post_save, sender=Image)
+def create_thumbnails(sender, instance, **kwargs):
+    filename, ext = os.path.splitext(os.path.basename(instance.image.name))
+    image_name = filename.split("/")[-1]
+
+    account_tier = instance.user.account_tier
+    thumbnail_sizes = account_tier.get_thumbnail_sizes
+
+    # Convert the image for each thumbnail size and save to disk
+    for size in thumbnail_sizes:
+        img_file = BytesIO(instance.image.read())
+        original_image = PIL_Image.open(img_file)
+
+        # Resize the image, ANTIALIAS ensure that the resized image has the best possible resolution
+        thumbnail = original_image.resize((size.width, size.height), PIL_Image.ANTIALIAS)
+
+        # Save the resized image to the path
+        thumb_io = BytesIO()
+
+        thumbnail.save(thumb_io, format="JPEG" if ext.lower() == ".jpg" else "PNG")
+        thumbnail_path = f"{image_name}_{size.height}{ext.lower()}"
+
+        thumbail_file = SimpleUploadedFile(
+            thumbnail_path, thumb_io.getvalue(), content_type="image/jpeg" if ext.lower() == ".jpg" else "image/png"
+        )
+        instance.image.save(thumbnail_path, thumbail_file, save=False)
+
+        # Save the resized image to the storage
+        # thumbnail_storage = instance.image.storage
+        # thumbnail_path = thumbnail_storage.save(thumb_file.name, thumb_file)
+        # thumbnail_storage.save(thumb_file.name, thumb_file)
+
+
+@receiver(cleanup_pre_delete, sender=Image)
+def custom_cleanup_pre_delete(sender, instance, **kwargs):
+    thumbnails_folder = os.path.dirname(instance.image.path)
+    if not os.path.isdir(thumbnails_folder):
+        print(f"Folder {thumbnails_folder} does not exist")
+        return
+
+    for filename in os.listdir(thumbnails_folder):
+        file_path = os.path.join(thumbnails_folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                os.rmdir(file_path)
+        except Exception as e:
+            print(f"Failed to delete {file_path}. Reason: {e}")
+
+    os.rmdir(thumbnails_folder)
