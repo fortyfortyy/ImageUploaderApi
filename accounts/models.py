@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models.signals import post_migrate, post_save
 from django.dispatch import receiver
 
+from default_configs import DEFAULT_TIERS_CONFIG
 from images.models import ThumbnailSize
 
 
@@ -33,31 +34,3 @@ class AccountTier(models.Model):
     def get_available_heights(self):
         thumnails = self.get_thumbnail_sizes
         return [t.height for t in thumnails]
-
-
-@receiver(post_migrate)
-def create_default_account_tiers(sender, **kwargs):
-    if sender.name == UserAccount._meta.app_label:
-        # Create a default AccountTiers if it doesn't exist
-        if AccountTier.objects.filter(name="Basic").exists():
-            return
-
-        basic_thumbnail = ThumbnailSize.objects.create(width=200, height=200)
-        basic_tier = AccountTier.objects.create(name="Basic")
-        basic_tier.thumbnail_sizes.add(basic_thumbnail)
-
-        premium_thumbnail = ThumbnailSize.objects.create(width=200, height=400)
-        premium_account = AccountTier.objects.create(name="Premium")
-        premium_account.thumbnail_sizes.add(premium_thumbnail)
-        premium_account.get_original_file = True
-
-        enterprise_account = AccountTier.objects.create(name="Enterprise", can_generate_expiring_links=True)
-        enterprise_account.thumbnail_sizes.set([basic_thumbnail, premium_thumbnail])
-        enterprise_account.get_original_file = True
-
-
-@receiver(post_save, sender=UserAccount)
-def create_user_account(sender, instance, created, **kwargs):
-    if created and not instance.account_tier:
-        instance.account_tier = AccountTier.objects.get(name="Basic")
-        instance.save()
