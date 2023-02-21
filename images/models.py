@@ -1,13 +1,16 @@
 import os
 import time
 import uuid
+from urllib.parse import urlparse
 
 from django.conf import settings
+from django.core.files.storage import default_storage
 from django.db import models
+from google.cloud import storage
 
 from images.utils import image_upload_path
 from images.validators import validate_expiration_time, validate_image_extension
-from ImageUploadApi.storage import CustomImageStorage
+from ImageUploadApi.storage import GoogleCloudMediaFileStorage
 
 User = settings.AUTH_USER_MODEL  # auth.User
 
@@ -27,7 +30,7 @@ class Image(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to=image_upload_path, validators=[validate_image_extension],
-                              storage=CustomImageStorage())
+                              storage=GoogleCloudMediaFileStorage)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -48,10 +51,14 @@ class Image(models.Model):
     def get_thumbnails(self):
         user_account_tier = self.user.account_tier
         available_thumbnail_sizes = user_account_tier.get_available_heights
-        base_file = os.path.dirname(self.get_orignal_url)
 
-        directory = os.path.dirname(self.image.path)
-        thumbnails = [f for f in os.listdir(directory)]
+        base_file = os.path.dirname(self.image.name)
+        # Get a reference to the default storage backend for GCP
+        storage = default_storage
+
+        # List all files in the same directory as the original file
+        thumbnails = storage.listdir(base_file)[1]
+
         thumbnails_to_return = []
         for thumbnail in thumbnails:
             name, _ = thumbnail.rsplit(".", 1)
