@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import serializers
 
 from images.models import ExpiringLink, Image
@@ -16,17 +17,15 @@ class ImageListSerializer(serializers.ModelSerializer):
 
     def get_images(self, obj):
         thumbnails = obj.get_thumbnails()
-        request = self.context.get('request')
         thumbnails_to_return = []
-
         for thumbnail in thumbnails:
-            if thumbnail.startswith('http' or 'https'):
+            if thumbnail.startswith(('https', 'http')):
                 # Already a full URL, no need to modify
                 thumbnails_to_return.append(thumbnail)
-            elif request is not None:
-                # Generate full URL for thumbnail using request's build_absolute_uri method
-                thumbnail_url = request.build_absolute_uri(thumbnail)
-                thumbnails_to_return.append(thumbnail_url)
+                continue
+
+            path = settings.MEDIA_URL + thumbnail
+            thumbnails_to_return.append(path)
 
         return thumbnails_to_return
 

@@ -1,11 +1,20 @@
-from django.core.files.storage import FileSystemStorage
+from urllib.parse import urljoin
+
+from django.conf import settings
 from django.utils.deconstruct import deconstructible
+from storages.backends.gcloud import GoogleCloudStorage
+from storages.utils import setting
 
 
 @deconstructible
-class CustomImageStorage(FileSystemStorage):
-    def get_available_name(self, name, **kwargs):
+class GoogleCloudMediaFileStorage(GoogleCloudStorage):
+    """
+      Google file storage class which gives a media file path from MEDIA_URL not google generated one.
+    """
+    bucket_name = setting('GS_BUCKET_NAME')
+
+    def url(self, name):
         """
-        Overrides the default get_available_name method to use the original filename provided by the user image.
+        Gives correct MEDIA_URL and not google generated url.
         """
-        return name
+        return urljoin(settings.MEDIA_URL, name)
