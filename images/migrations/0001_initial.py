@@ -36,8 +36,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ExpiringLink',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('link', models.CharField(max_length=100)),
+                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('link', models.CharField(max_length=300)),
                 ('expiry_time', models.DateTimeField()),
                 ('image', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='expiring_links', to='images.image')),
             ],
