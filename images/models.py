@@ -30,7 +30,7 @@ class Image(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to=image_upload_path, validators=[validate_image_extension],
-                              storage=GoogleCloudMediaFileStorage)
+                              storage=GoogleCloudMediaFileStorage, max_length=255)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -80,7 +80,7 @@ class Image(models.Model):
 class ExpiringLink(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     image = models.OneToOneField(Image, on_delete=models.CASCADE, related_name="expiring_link", unique=True)
-    link = models.CharField(max_length=100)
+    link = models.CharField(max_length=255)
     expires_in = models.IntegerField(validators=[validate_expiration_time])
 
     def __str__(self):
