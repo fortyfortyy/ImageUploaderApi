@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     'django_cleanup.apps.CleanupConfig',
+    'drf_yasg',
 
     # local
     "accounts.apps.AccountsConfig",
@@ -209,6 +210,8 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     'EXCEPTION_HANDLER': 'ImageUploadApi.utils.custom_exception_handler',
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 5,
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
