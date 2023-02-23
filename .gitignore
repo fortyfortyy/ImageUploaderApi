@@ -6,3 +6,6 @@ db.sqlite3
 find_kill_process.sh
 media
 credentials.json
+.env
+postgres
+docker-compose-prod.yml
