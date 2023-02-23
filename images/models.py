@@ -1,12 +1,10 @@
 import os
 import time
 import uuid
-from urllib.parse import urlparse
 
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.db import models
-from google.cloud import storage
 
 from images.utils import image_upload_path
 from images.validators import validate_expiration_time, validate_image_extension
