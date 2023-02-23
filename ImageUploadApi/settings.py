@@ -13,6 +13,9 @@ import os
 from datetime import timedelta
 from pathlib import Path
 from google.oauth2 import service_account
+from environs import Env
+env = Env()
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m!@n0j0j2%63bpn0_dvyc7yr6_7q3$i^3lb48)%w=go&asm#!q'
+SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DJANGO_DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -92,14 +95,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ImageUploadApi.wsgi.application'
 
+DEFAULT_ENIGNE = "django.db.backends.sqlite3" if DEBUG else os.environ.get("POSTGRES_ENGINE")
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    # "default": {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
+    "default": {
+        "ENGINE": DEFAULT_ENIGNE,
+        "NAME": os.environ.get("POSTGRES_NAME", BASE_DIR / "db.sqlite3"),
+        "USER": os.environ.get("POSTGRES_USER", "user"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "password"),
+        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
+        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }
 }
 
@@ -139,6 +150,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "static"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -205,10 +217,10 @@ SIMPLE_JWT = {
     "UPDATE_LAST_LOGIN": True,
 }
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = env.str("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = env.str("CELERY_RESULT_BACKEND")
 
-GS_BUCKET_NAME = "image-upload-api"
+GS_BUCKET_NAME = env.str("GS_BUCKET_NAME")
 DEFAULT_FILE_STORAGE = 'ImageUploadApi.storage.GoogleCloudStorage'
 MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
 
