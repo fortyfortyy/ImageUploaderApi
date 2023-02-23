@@ -75,11 +75,3 @@ class ExpiringLinkDetailView(generics.RetrieveAPIView, ExpiringLinkMixin):
         content_type, encoding = mimetypes.guess_type(image.name)
         response = FileResponse(image, content_type=content_type, as_attachment=True, filename=image.name.split('/')[-1])
         return response
-
-
-# TODO przy inicjacji apki od nowa zaimplemenotwać testowego usera
-# TODO testy
-# TODO google storage, redis, celery
-# TODO docker compose, zmienne środowiskowe
-# TODO caching
-# TODO hosting na cloud providerze
