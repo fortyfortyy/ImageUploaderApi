@@ -35,6 +35,7 @@ google-cloud-storage==2.7.0
 google-crc32c==1.5.0
 google-resumable-media==2.4.1
 googleapis-common-protos==1.58.0
+gunicorn==20.1.0
 humanize==4.6.0
 idna==3.4
 isort==5.12.0
@@ -71,3 +72,4 @@ tornado==6.2
 urllib3==1.26.14
 vine==5.0.0
 wcwidth==0.2.6
+whitenoise==6.3.0
