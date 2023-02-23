@@ -116,7 +116,6 @@ class ImageAPITestCase(APITestCase):
         self.assertEqual(ExpiringLink.objects.count(), 1)
         self.assertEqual(Image.objects.first().user, self.user)
 
-    #
     def test_list_expiring_links(self):
         image = Image.objects.create(user=self.user, image=self.image_file)
         ExpiringLink.objects.create(image=image, expires_in='3600')
