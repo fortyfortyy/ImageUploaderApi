@@ -6,7 +6,6 @@ from io import BytesIO
 
 from celery import shared_task
 from django.core.files.uploadedfile import SimpleUploadedFile
-from PIL import Image
 from PIL import Image as PIL_Image
 
 from images.models import Image
@@ -40,10 +39,10 @@ def generate_thumbnail_task(pk: str):
         thumbnail.save(thumb_io, format="JPEG" if ext.lower() == ".jpg" else "PNG")
         thumbnail_path = f"{image_name}_{size.height}{ext.lower()}"
 
-        thumbail_file = SimpleUploadedFile(
+        thumbnail_file = SimpleUploadedFile(
             thumbnail_path, thumb_io.getvalue(), content_type="image/jpeg" if ext.lower() == ".jpg" else "image/png"
         )
-        instance.image.save(thumbnail_path, thumbail_file, save=False)
+        instance.image.save(thumbnail_path, thumbnail_file, save=False)
 
 
 @shared_task
