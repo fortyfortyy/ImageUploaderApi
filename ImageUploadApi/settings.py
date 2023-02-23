@@ -87,7 +87,7 @@ ROOT_URLCONF = 'ImageUploadApi.urls'
 CORS_ALLOWED_ORIGINS = (
     "http://localhost:3000",
     "http://localhost:8000",
-    "dev-imageuploadapi.up.railway.app"
+    "https://dev-imageuploadapi.up.railway.app"
 )
 
 TEMPLATES = [
