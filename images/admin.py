@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from images.models import ExpiringLink, Image, ThumbnailSize
+
+admin.site.register(Image)
+admin.site.register(ThumbnailSize)
+admin.site.register(ExpiringLink)

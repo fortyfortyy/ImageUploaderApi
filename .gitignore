@@ -3,3 +3,9 @@ __pycache__/
 db.sqlite3
 .DS_Store  # Mac only
 ./docker-compose-production.yml
+find_kill_process.sh
+media
+.env
+postgres
+docker-compose-prod.yml
+static

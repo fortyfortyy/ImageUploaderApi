@@ -1,0 +1,6 @@
+[flake8]
+ignore = E211, E999, F401, F821, W503
+extend-ignore = E203
+max-line-length = 127
+max-complexity = 10
+exclude = settings.py, */migrations/*
