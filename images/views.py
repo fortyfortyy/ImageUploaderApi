@@ -52,6 +52,9 @@ class ExpiringLinkListCreateView(generics.ListCreateAPIView, ExpiringLinkMixin):
         link = self.generate_expiring_link(validated_data['image'], expires_in)
         return Response(link, status=status.HTTP_201_CREATED)
 
+    def get_queryset(self):
+        return Image.objects.filter(user=self.request.user)
+
 
 class ExpiringLinkDetailView(generics.RetrieveAPIView, ExpiringLinkMixin):
     queryset = ExpiringLink.objects.all()
