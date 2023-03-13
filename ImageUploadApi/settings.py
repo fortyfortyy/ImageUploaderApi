@@ -237,7 +237,7 @@ DEFAULT_FILE_STORAGE = 'ImageUploadApi.storage.GoogleCloudStorage'
 MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join('credentials.json')
+    os.path.join('private_credentials.json')
 )
 
 GS_BLOB_CHUNK_SIZE = 10 * 1024 * 1024
