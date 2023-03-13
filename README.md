@@ -5,7 +5,7 @@
 
 This is based on the **Django Rest Framework** application that implements the all necessary logic to work with **GSC** (**Google Cloud Storage**), **Redis**, **Celery** and **PostgreSQL**.
 It does provide ONLY Django Rest Framework UI, so please follow the docs to see available URLS. 
-Due to the prevention of the credentials, I hope you not gonna spam my test bucket :)
+I hope you not gonna spam my bucket :)
 
 ## Table of contents
 * [Technologies Used](#technologies-used)
@@ -69,6 +69,12 @@ ADVANCED API DOCS
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## How To Set Up Locally
+> First of all, you need to:
+> - Create a **bucket in GCS <a href="https://console.cloud.google.com/storage/create-bucket">link </a>**, with the name of your desire. 
+> - Create **IAM Policy <a href="https://console.cloud.google.com/iam-admin/serviceaccounts"> link </a>**, GENERATE A KEY and download *.json file with the credentials. 
+> - PUT YOUR CREDENTIALS TO THE SOURCE OF THIS PROJECT AND CHANGE THE NAME TO "private-credentials.json"
+
+
 The easiest approach is to run docker-compose. It should work without any problems.
 The docker-compose approach is based on google cloud storage. If you have the desire to save locally 
 the images and thumbnails please, visit <a href="https://github.com/fortyfortyy/ImageUploadApi/pull/6"> this PR </a> and see the changes.
