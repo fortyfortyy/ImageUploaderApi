@@ -3,7 +3,7 @@ version: "1"
 services:
   db:
     container_name: image_upload_api_database
-    restart: unless-stopped
+    restart: always
     image: postgres:14.0-alpine
     environment:
       - POSTGRES_DB=postgres
@@ -11,27 +11,20 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    expose:
-      - 5432
 
   redis:
     restart: unless-stopped
     image: redis:7.0.8-alpine3.17
-    expose:
-      - 6379
 
   backend:
     container_name: image_upload_api_backend
+    restart: always
     build:
-      context: .
+      context: ./
       dockerfile: ./docker/local/Dockerfile
-    command: >
-      sh -c "python manage.py migrate &&
-             gunicorn ImageUploadApi.wsgi -b 0.0.0.0:8000 &&
-             python manage.py create_test_superuser"
-    image: image_upload_api_backend
     volumes:
-      - .:/app
+        - .:/app
+    image: image_upload_api_backend
     ports:
       - "8000:8000"
     env_file:
@@ -39,9 +32,12 @@ services:
     depends_on:
       - db
       - redis
+    command: sh -c "python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000 &&
+      python manage.py create_test_superuser"
 
   celery_worker:
-    restart: unless-stopped
+    restart: always
     build:
       context: .
       dockerfile: ./docker/local/Dockerfile
@@ -56,6 +52,7 @@ services:
     command: sh -c "celery -A ImageUploadApi worker -l INFO"
 
   flower:
+    restart: always
     build:
       context: .
       dockerfile: ./docker/local/Dockerfile
