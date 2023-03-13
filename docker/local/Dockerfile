@@ -9,7 +9,8 @@ RUN apk update && apk add python3-dev gcc libc-dev musl-dev libffi-dev openssl-d
 WORKDIR /app
 
 COPY ./requirements.txt .
-#ADD ./requirements.txt /app/
 RUN pip install -r requirements.txt
 
 COPY ./docker/local /app/docker
+
+COPY . .

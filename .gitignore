@@ -8,4 +8,5 @@ media
 .env
 postgres
 docker-compose-prod.yml
-static
+docker/prod
+*credentials*

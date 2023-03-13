@@ -12,7 +12,7 @@ def validate_image_extension(value):
         raise ValidationError("Unsupported file extension. Please upload a JPG or PNG image.")
 
     if value.size > MAX_UPLOAD_SIZE:
-        raise ValidationError('File size exceeds the limit')
+        raise ValidationError('File size exceeds the limit. Max 10MB is allowed.')
 
 
 def validate_expiration_time(value):
