@@ -72,7 +72,7 @@ ADVANCED API DOCS
 > First of all, you need to:
 > - Create a **bucket in GCS <a href="https://console.cloud.google.com/storage/create-bucket">link </a>**, with the name of your desire. 
 > - Create **IAM Policy <a href="https://console.cloud.google.com/iam-admin/serviceaccounts"> link </a>**, GENERATE A KEY and download *.json file with the credentials. 
-> - PUT YOUR CREDENTIALS TO THE SOURCE OF THIS PROJECT AND CHANGE THE NAME TO "private-credentials.json"
+> - PUT YOUR CREDENTIALS TO THE SOURCE OF THIS PROJECT AND CHANGE THE NAME TO "private_credentials.json" (look at settings.py)
 
 
 The easiest approach is to run docker-compose. It should work without any problems.
