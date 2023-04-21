@@ -82,7 +82,7 @@ ruamel.yaml==0.17.21
 ruamel.yaml.clib==0.2.7
 six==1.16.0
 soupsieve==2.4
-sqlparse==0.4.3
+sqlparse==0.4.4
 tomli==2.0.1
 tornado==6.2
 uritemplate==4.1.1
